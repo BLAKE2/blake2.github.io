@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>BLAKE2</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link href="style.css" rel="stylesheet" type="text/css" media="screen">
+</head>
+<body>
+<header>
+<h1>BLAKE2 <small>&mdash; fast secure hashing</small></h1>
+</header>
+<nav>
+<a href="#sp">SPECS</a>
+&nbsp;|&nbsp;
+<a href="https://github.com/BLAKE2/">CODE</a>
+&nbsp;|&nbsp;
+<a href="#su">B2SUM</a>
+&nbsp;|&nbsp;
+<a href="#co">CONTACT</a>
+&nbsp;|&nbsp;
+<a href="#us">USERS</a>
+&nbsp;|&nbsp;
+<a href="#sw">THIRD-PARTY SOFTWARE</a>
+&nbsp;|&nbsp;
+<a href="#cr">CRYPTANALYSIS</a>
+&nbsp;|&nbsp;
+<a href="#qa">FAQ</a>
+</nav>
+<section id="in">
+<br />
+<br />
+<h3>
+CONSIDER USING <b>BLAKE3</b>, faster than BLAKE2, see  <a href="https://github.com/BLAKE3-team/BLAKE3">
+https://github.com/BLAKE3-team/BLAKE3</a> <br />
+</h3>
+
+<br />
+BLAKE2 is a cryptographic hash function <b>faster than MD5, SHA-1, SHA-2,
+and SHA-3</b>, yet is at least as secure as the latest standard SHA-3.
+BLAKE2 has been <a href="#us">adopted</a> by many projects due to its
+high speed, security, and simplicity. 
+
+<br /><br />
+
+BLAKE2 is specified in <a href="https://tools.ietf.org/html/rfc7693">RFC
+7693</a>, and our code and test vectors are available on <a
+href="https://github.com/BLAKE2/">GitHub</a>, licensed under CC0 (public
+domain-like).  
+BLAKE2 is also described in the 2015 book <a
+href="https://131002.net/blake/book">The Hash Function BLAKE</a>.
+
+<br /><br />
+BLAKE2 comes in two flavors: 
+<ul>
+<li>
+<b>BLAKE2b</b> (or just BLAKE2) is optimized for 64-bit
+platforms&mdash;including NEON-enabled ARMs&mdash;and produces digests
+of any size between 1 and 64 bytes
+</li>
+<b>BLAKE2s</b> is optimized for <b>8- to 32-bit</b>
+platforms and produces digests of any size between 1 and 32 bytes
+</ul>
+BLAKE2 includes the 4-way parallel <b>BLAKE2bp</b> and
+8-way parallel <b>BLAKE2sp</b> designed for increased performance on multicore or SIMD CPUs.
+BLAKE2 offers these algorithms tuned to your specific
+requirements, such as <b>keyed</b> hashing (that is, MAC or PRF), hashing
+with a <b>salt</b>, updatable or incremental <b>tree-hashing</b>, or any
+combination thereof. These versions are specified in the <a
+href="blake2.pdf">BLAKE2 document</a>.
+<br /><br />
+BLAKE2 also includes the <b>BLAKE2x</b> variants, which can produce
+digests of arbitrary length. BLAKE2x is specified in a <a
+href="blake2x.pdf">separate document</a>.
+<br /><br />
+BLAKE2 shines on 64-bit CPUs: on an Intel Core i5-6600 (Skylake
+microarchitecture, 3310MHz), BLAKE2b can process <b>1 gibibyte per
+second</b>, or a speed rate of 3.08 cycles per byte.
+<br />
+<br />
+The plot below shows how BLAKE2 outperforms MD5, SHA-1, SHA-2,
+and SHA-3 on a Skylake Intel CPU (speeds are for hashing using a single
+core; using multiple cores, BLAKE2 can be even faster):
+<br />
+<img src="skylake.png" width=800>
+<br />
+</section>
+<section id="sp">
+<h2>Specifications</h2>
+
+<ul>
+<li>
+<a href="blake2.pdf">blake2.pdf</a> is our original 
+BLAKE2 documentation, which describes how we went from the SHA-3
+finalist BLAKE to BLAKE2, how all the BLAKE2 versions work, and analyzes BLAKE2's performance and security. 
+</li>
+<li>
+<a
+href="https://tools.ietf.org/html/rfc7693">RFC 7693</a>
+is an RFC edited by Markku-Juhani O. Saarinen that provides a
+complete specification of BLAKE2b and BLAKE2s
+</li>
+<li>
+<a
+href="blake2x.pdf">blake2x.pdf</a>, the specification of BLAKE2X,
+versions of BLAKE2 to create hashes of any length up to 4 GiB and build
+XOFs, KDFs, and DRBGs (published to request comments, design not final
+yet)
+</li>
+</ul>
+
+</section>
+<section id="su">
+<h2>b2sum</h2>
+
+The b2sum utility is similar to the md5sum or shasum utilities but for
+BLAKE2. The archive <a
+href="b2sum-bin_20130305.zip">b2sum-bin_20130305.zip</a> provides fat
+binaries of b2sum for Linux and Windows, 32-bit and 64-bit.
+
+</section>
+<section id="co">
+<h2>Contact</h2>
+BLAKE2 was designed by a team of experts in cryptanalysis,
+implementation, and cryptographic engineering:
+<ul>
+<li>
+  Jean-Philippe Aumasson 
+  (<a href="https://twitter.com/aumasson">@veorq</a>,
+  <a href="https://131002.net">https://131002.net</a>):
+  main designer of BLAKE, author of <a href="
+  https://131002.net/papers.html">research papers</a> on cryptanalysis
+</li>
+<li>
+  Samuel Neves 
+  (<a href="https://twitter.com/sevenps">@sevenps</a>,
+  <a
+  href="http://eden.dei.uc.pt/~sneves/">http://eden.dei.uc.pt/~sneves/</a>):
+  author of the fastest BLAKE implementations, and of
+  <a href="http://eden.dei.uc.pt/~sneves/">research papers</a>
+  on efficient implementations </li>
+<li>
+  Zooko Wilcox-O'Hearn 
+  (<a href="https://twitter.com/zooko">@zooko</a>, 
+  <a href="https://LeastAuthority.com">https://LeastAuthority.com</a>): 
+  one of the designers of the <a href="https://tahoe-lafs.org">Tahoe-LAFS</a> 
+  secure distributed storage system
+</li>
+<li>
+  Christian Winnerlein 
+  (<a href="https://twitter.com/codesinchaos">@codesinchaos</a>,
+  <a
+  href="https://codesinchaos.wordpress.com">https://codesinchaos.wordpress.com/</a>):
+  author of a number of <a href="https://github.com/CodesInChaos">C# projects</a>
+</li>
+</ul>
+</section>
+BLAKE2 is based on the SHA-3 proposal <a
+href="https://131002.net/blake/">BLAKE</a>, designed by Jean-Philippe
+Aumasson, Luca Henzen, Willi Meier, and Raphael C.-W. Phan. 
+BLAKE2, like BLAKE, relies on a core algorithm borrowed from the <a
+href="http://cr.yp.to/chacha.html">ChaCha</a>
+stream cipher, designed by Daniel J. Bernstein.
+
+You may contact us on Twitter if 140 characters are enough and if a
+public discussion is okay. 
+Otherwise, please email us to <a
+href="mailto:contact@blake2.net">contact@blake2.net</a>, which forwards
+to the four designers.
+<br />
+<br />
+We created a mailing list for BLAKE2 discussions
+(security, performance, bug reports, etc.): 
+to subscribe, please send an empty message to
+<a
+href="mailto:info-subscribe@blake2.net">info-subscribe@blake2.net</a>.
+<br />
+</section>
+<section id="us">
+<h2>Users</h2>
+Non-exhaustive list of systems using BLAKE2:
+<ul>
+
+<li>
+<a href="https://www.wolfssl.com/">WolfSSL</a>:
+WolfSSL includes BLAKE2b 
+</li>
+
+<li>
+<a href="https://www.openssl.org/">OpenSSL</a>:
+OpenSSL includes BLAKE2b and BLAKE2s
+</li>
+
+<li>
+<a href="https://www.wireguard.io/">Wireguard</a>:
+The Wireguard VPN uses BLAKE2s for hashing and as a MAC
+</li>
+
+<li>
+<a href="http://botan.randombit.net/">Botan</a>:
+The Botan library includes BLAKE2b
+</li>
+
+<li>
+<a href="https://github.com/weidai11/cryptopp">Crypto++</a>:
+The Crypto++ library includes BLAKE2s and BLAKE2b
+</li>
+
+<li>
+<a href="https://noiseprotocol.org">Noise</a>:
+The Noise protocol (now used in WhatsApp) uses BLAKE2s and BLAKE2b
+</li>
+
+<li>
+<a href="http://www.cifraextrema.com">Cifra Extrema</a>:
+Cifra Extrema products use several versions of BLAKE2 in its servers and
+satellite modules
+</li>
+
+<li>
+<a href="https://www.bouncycastle.org/releasenotes.html">Bouncy
+Castle</a>:
+Includes BLAKE2b-160, BLAKE2b-256, BLAKE2b-384, and BLAKE2b-512
+</li>
+
+<li>
+<a href="https://peerio.com/">Peerio</a>: 
+BLAKE2s is used to generated IDs and for integrity checks
+</li>
+
+<li>
+<a href="http://8th-dev.com/">8th</a>: 
+BLAKE2s is the default hash in the 8th cross-platform development system 
+</li>
+
+<li>
+<a href="https://github.com/librsync/librsync">librsync</a>: BLAKE2b is
+the default hash un this popular remote delta-compression library
+</li>
+
+<li><a href="http://corz.org/windows/software/checksum/">checksum</a>:
+BLAKE2s is one of the three hash functions supported with MD5 and SHA-1
+</li>
+
+<li>
+Password hashing schemes:
+<ul>
+<li>
+<a href="https://www.cryptolux.org/index.php/Argon2">Argon2</a>
+(by Biryukov, Dinu, Khovratovich; PHC winner)
+</li>
+<li>
+<a href="http://eprint.iacr.org/2013/525">Catena</a>
+(by Forler, Lucks, Wenzel; PHC candidate)
+</li>
+<li>
+<a href="https://password-hashing.net/">Lanarea</a> 
+(by Mubarak; PHC candidate)
+</li>
+<li>
+<a href="http://lyra-kdf.net/">Lyra and Lyra2</a> 
+(by Simplicio Jr., Barreto, Almeida, Andrade; PHC candidate)
+</li>
+<li>
+<a href="http://www.ftc-c.com/pack/neoscrypt_v1.pdf">Neoscrypt</a>
+(by Doering)
+</li>
+<li>
+<a href="https://password-hashing.net/">RIG</a> 
+(by Chang, Jati, Mishra, Sanadhya; PHC candidate)
+</li>
+
+<li>
+<a href="https://password-hashing.net/">TwoCats</a> 
+(by Cox; PHC candidate)
+</li>
+
+<li>
+<a href="https://password-hashing.net/">Yarn</a> 
+(by Capun; PHC candidate)
+</li>
+</ul>
+</li>
+
+<li>
+Crypto tools by <a href="https://github.com/catid">catid</a>:
+<ul>
+<li>
+<a href="https://github.com/catid/cymric">Cymric</a> ("portable secure
+random number generator")
+</li>
+<li>
+<a href="https://github.com/catid/snowshoe">Snowshoe</a> ("portable,
+secure, fast elliptic curve math library")
+</li>
+<li>
+<a href="https://github.com/catid/tabby">Tabby</a> ("strong, fast, and
+portable cryptographic signatures and handshakes")
+</li>
+</ul>
+</li>
+
+<li><a href="https://github.com/jedisct1/libsodium">Sodium</a>:
+BLAKE2b is the default hash function of this cryptography library
+based on NaCl
+</li>
+
+<li><a
+href="http://aaron-tech.com/accumulus.html"</a>Accumulus</a>: BLAKE2s is used
+for producing unique keys of the data stored
+</li>
+
+<li><a
+href="http://www.likasoft.com/"</a>Archivarius 3000</a>: BLAKE2s is used
+for deduplication in this desktop search system 
+</li>
+
+<li><a
+href="http://www.phoronix-test-suite.com/">Phoronix Test
+Suite</a>: BLAKE2s is one of the benchmark modules (see <a
+href="http://openbenchmarking.org/tests/pts">OpenBenchmarking</a>)
+</li>
+
+<li> <a href="http://www.rarlab.com/technote.htm#hashrecord">WinRAR</a>: BLAKE2sp is
+an optional checksum in the RAR 5.0 archive format
+</li>
+
+<li> <a href="https://github.com/fd00/yacp">YACP</a>: BLAKE2 is
+integrated in Yet Another Cygwin-Ports 
+</li>
+
+<li>
+<a href="http://yassl.com/yaSSL/Products-cyassl.html">CyaSSL</a>:
+BLAKE2b is one of the hash functions supported in this lightweight SSL
+library
+</li>
+
+<li>
+<a href="http://www.insomnihack.ch/">Insomni'hack 2013</a>: BLAKE2b was
+the hash used to validate flags in this hacking contest (CTF)
+</li>
+
+<li>
+<a href="http://code.google.com/p/pcompress/">Pcompress</a>: BLAKE2b is
+the default checksum in this parallel compression and deduplication
+utility; BLAKE2bp is used in some cases
+</li>
+</ul>
+</section>
+<section id="sw">
+<h2>Third-party software</h2>
+<ul>
+<li>
+2018 Jun 13: Nazar Mokrynskyi.
+<i><a
+href="https://github.com/nazar-pc/blake2.wasm">blake2.wasm</a></i>.
+<br />
+Main result: WebAssembly version
+<br /><br />
+</li>
+<li>
+2018 Jun 4: Jack O'Connor.
+<i><a
+href="https://github.com/oconnor663/blake2_simd">blake2_simd</a></i>.
+<br />
+Main result: high-performance implementations of BLAKE2b/s/bp/sp in pure
+Rust with dynamic SIMD
+<br /><br />
+</li>
+<li>
+2016 Sep 25: dcposch.
+<i><a
+href="https://github.com/dcposch/blakejs">blakejs</a></i>.
+<br />
+Main result: pure JavaScript implementation of BLAKE2b and BLAKE2s 
+<br /><br />
+</li>
+<li>
+2016 Aug 25: Minio Cloud Storage.
+<i><a
+href="https://github.com/minio/blake2b-simd">blake2b-simd</a></i>.
+<br />
+Main result: fast hashing using pure Go implementation of BLAKE2b with SIMD instructions
+<br /><br />
+</li>
+<li>
+2016 Jan 31: Pol Le Garsmeur.
+<i><a
+href="https://github.com/legarspol/java-blake2s">java-blake2s</a></i>.
+<br />
+Main result: Java implementation of BLAKE2s
+<br /><br />
+</li>
+<li>
+2016 Jan 5: ScorexProject.
+<i><a
+href="https://github.com/scorexproject/scrypto">scrypto</a></i>.
+<br />
+Main result: Scala library providing BLAKE2
+<br /><br />
+</li>
+<li>
+2015 Dec 5: John Galt.
+<i><a
+href="https://github.com/centromere/blake2">blake2</a></i>.
+<br />
+Main result: Haskell library providing BLAKE2
+<br /><br />
+</li>
+<li>
+2015 Nov 9: Cesar Eduardo Barros.
+<i><a
+href="https://github.com/cesarb/blake2-rfc">blake2-rfc</a></i>.
+<br />
+Main result: pure Rust, with experimental SIMD support
+<br /><br />
+</li>
+<li>
+2015 Oct 31: Coda Hale.
+<i><a
+href="https://github.com/codahale/blake2">blake2</a></i>.
+<br />
+Main result: Go wrapper
+<br /><br />
+</li>
+<li>
+2015 Jun 9: Ivan Kozik.
+<i><a
+href="https://github.com/ludios/node-blake2">node-blake2</a></i>.
+<br />
+Main result: io.js bindings for BLAKE2b, BLAKE2s, BLAKE2bp, BLAKE2sp
+<br /><br />
+</li>
+<li>
+2015 Jan 30: Markku-Juhani O. Saarinen.
+<i><a
+href="https://github.com/mjosaarinen/blake2_mjosref">blake2_mjosref</a></i>.
+<br />
+Main result: "A clean & simple implementation of BLAKE2b and BLAKE2s
+hash functions -- written while writing the RFC."
+<br /><br />
+</li>
+<li>
+2014 Aug 27: Michael Gehring.
+<i><a href="https://github.com/ebfe/rust-blake2">rust-blake2</a></i>.
+<br />
+Main result: Rust implementation of BLAKE2b and BLAKE2s
+<br /><br />
+</li>
+<li>
+2014 Aug 4: C. J. Silvero. 
+<i><a href="https://npmjs.org/package/avon">avon</a></i>.
+<br />
+Main result: node bindings for BLAKE2b, BLAKE2s, BLAKE2bp, and BLAKE2Sp
+<br /><br />
+</li>
+<li>
+2014 Feb 14: Joubin Houshyar.
+<i><a href="https://github.com/alphazero/Blake2b">Blake2b</a></i>.
+<br />
+Main result: Java implementation of BLAKE2b
+<br /><br />
+</li>
+<li>
+2013 Dec 16: Larry Bugbee.
+<i><a href="https://github.com/buggywhip/blake2_py">blake2_py</a></i>.
+<br />
+Main result: 100% Python implementation of BLAKE2b and BLAKE2s
+<br /><br />
+</li>
+<li>
+2013 May 10: Floodyberry.
+<i><a href="https://github.com/floodyberry/blake2b-opt">blake2b-opt</a></i>.
+<br />
+Main result: optimized C implementation of BLAKE2b for x86, SSE2, SSSE3,
+AVX, and XOP
+<br /><br />
+</li>
+<li>
+2013 Mar 27: Dmitry Chestnykh. 
+<i><a href="https://github.com/dchest/pyblake2">pyblake2</a></i>.
+<br />
+Main result: Python module for BLAKE2b and BLAKE2s 
+<br /><br />
+</li>
+<li>
+2013 February 9: Tasuku Suenaga.
+<i><a
+href="http://search.cpan.org/~gunya/Digest-BLAKE2-0.01/">Digest-BLAKE2-0.01</a></i>.
+<br />
+Main result: Perl interface to BLAKE2
+<br /><br />
+</li>
+<li>
+2013 Feb 3: Dmitry Chestnykh. 
+<i><a href="https://github.com/dchest/blake2-dart">blake2-dart</a></i>.
+<br />
+Main result: Dart implementation of BLAKE2s 
+<br /><br />
+</li>
+<li>
+2013 Jan 14: Corey Richardson.
+<i><a
+href="https://github.com/cmr/libblake2">libblake2</a></i>.
+<br />
+Main result: shared and static libraries for BLAKE2b, BLAKE2s, BLAKE2bp,
+and BLAKE2sp
+<br /><br />
+</li>
+<li>
+2013 Jan 7: Ulrik Sverdrup.
+<i><a
+href="https://github.com/blake2-ppc/blake2-ppc-altivec">blake2-ppc-altivec</a></i>.
+<br />
+Main result: BLAKE2s for PowerPC Altivec
+<br /><br />
+</li>
+<li>
+2013 Jan 6: Takashi Seki. 
+<i><a href="https://npmjs.org/package/node-blake2">node-blake2</a></i>.
+<br />
+Main result: node bindings for BLAKE2b, BLAKE2s, BLAKE2bp, and BLAKE2Sp
+<br /><br />
+</li>
+<li>
+2013 Jan 3: Dmitry Chestnykh. 
+<i><a href="https://www.codingrobots.org/b2sum/">b2sum in Go</a></i>.
+<br />
+Main result: b2sum binaries for OS X (amd64), Linux (amd64), and Windows (x86)
+<br /><br />
+</li>
+<li>
+2012 Dec 30: Kwon-Han Bae. 
+<i><a href="https://github.com/darjeeling/python-blake2">python-blake2</a></i>.
+<br />
+Main result: Python module for BLAKE2b and BLAKE2s
+<br /><br />
+</li>
+<li>
+2012 Dec 29: Dmitry Chestnykh. 
+<i><a href="https://github.com/dchest/blake2s-js">blake2s-js</a></i>.
+<br />
+Main result: BLAKE2s in TypeScript/JavaScript 
+<br /><br />
+</li>
+<li>
+2012 Dec 29: Dmitry Chestnykh. 
+<i><a href="https://github.com/dchest/blake2s">blake2s</a></i>.
+<br />
+Main result: BLAKE2s in Go 
+<br /><br />
+</li>
+<li>
+2012 Dec 24: Craig Akimoto. 
+<i><a href="https://github.com/strawbrary/php-blake2">php-blake2</a></i>.
+<br />
+Main result: PHP wrapper 
+<br /><br />
+</li>
+<li>
+2012 Dec 22: Dmitry Chestnykh. 
+<i><a href="https://github.com/dchest/b2sum">b2sum</a></i>.
+<br />
+Main result: command line tool b2sum in Go
+<br /><br />
+</li>
+<li>
+2012 Dec 22: Dmitry Chestnykh. 
+<i><a href="https://github.com/dchest/blake2b">blake2b</a></i>.
+<br />
+Main result: BLAKE2b in Go 
+<br /><br />
+</li>
+</ul>
+</section>
+<section id="cr">
+<h2>Cryptanalysis</h2> 
+<ul>
+<li>
+2015 May 28:
+Thomas Espitau, Pierre-Alain Fouque, Pierre Karpman.
+<a href="https://eprint.iacr.org/2015/515">
+Higher-Order Differential Meet-in-The-Middle Preimage Attacks on SHA-1
+and BLAKE
+</a>.
+IACR ePrint archive, report 2015/515.
+</li>
+<li>
+2015 Feb 9: Dmitry Khovratovich, Ivica Nikolic, Josef Pieprzyk,
+Przemyslaw Sokolowski, Ron Steinfeld.
+<a href="http://eprint.iacr.org/2015/095">Rotational Cryptanalysis of ARX Revisited</a>.
+IACR ePrint archive, report 2015/095.
+</li>
+<li>
+2014 Dec 18: Yonglin Hao.
+<a href="http://eprint.iacr.org/2014/1012">The Boomerang Attacks on BLAKE and BLAKE2</a>.
+IACR ePrint archive, report 2014/1012.
+</li>
+<li>
+2013 Jul 29: Jian Guo, Pierre Karpman, Ivica Nikolic, Lei Wang, Shuang
+Wu. <a href="http://eprint.iacr.org/2013/467">Analysis of BLAKE2</a>.
+IACR ePrint archive, report 2013/467.
+</li>
+</ul>
+</section>
+<section id="qa">
+<h2>FAQ</h2> 
+<a name="Q0_testvectors" id="Q0_testvectors"></a>
+<b>Q:
+Where are test vectors?
+</b>
+<br />
+<p>
+<b>A:</b>
+<a
+href="https://github.com/BLAKE2/BLAKE2/tree/master/testvectors">
+https://github.com/BLAKE2/BLAKE2/tree/master/testvectors</a>
+</p>
+<a name="Q1_security" id="Q1_security"></a>
+<b>Q:
+How can I be sure the BLAKE2 is secure?   
+</b>
+<br />
+<p> 
+<b>A:</b>
+We have no proof that BLAKE2 is as secure as we claim, but there are
+good reasons to believe it:
+BLAKE2 relies on (essentially) the same core algorithm as BLAKE, which
+has been intensively analyzed since 2008 within the SHA-3 competition,
+and which was one of the 5 finalists. 
+NIST's <a
+href="http://nvlpubs.nist.gov/nistpubs/ir/2012/NIST.IR.7896.pdf">final
+report</a> writes that BLAKE has a "very large security margin", and
+that the the cryptanalysis performed on it has "a great deal of
+depth".
+The best academic attack on BLAKE (and BLAKE2) works on a reduced
+version with 2.5 rounds, whereas BLAKE2b does 12 rounds, and BLAKE2s
+does 10 rounds.
+But even this attack is not practical: it only shows for example that
+with 2.5 rounds, the preimage security of BLAKE2b is downgraded from 512
+bits to 481 bits, or that the collision security of BLAKE2s is
+downgraded from 128 bits to 112 bits (which is similar to the security
+of 2048-bit RSA).
+</p> 
+	<a name="Q2_speed" id="Q2_speed"></a>
+<b>Q:
+Why is BLAKE2 so fast?   
+</b>
+<br />
+<p> 
+<b>A:</b>
+BLAKE2 is fast in software because it exploits features of modern CPUs,
+namely instruction-level parallelism, SIMD instruction set extensions,
+and multiple cores. 
+BLAKE2 also benefits from the optimization work performed during the
+SHA-3 competition (see for example <a
+href="https://131002.net/data/papers/NA12a.pdf">this paper</a> by two of
+the designers of BLAKE2).
+</p> 
+	<a name="Q3_speed_is_bad" id="Q3_speed_is_bad"></a>
+<b>Q:
+Why do you want BLAKE2 to be fast? Aren't fast hashes bad?
+</b>
+<br />
+<p> 
+<b>A:</b>
+You want your hash function to be fast if you are using it to compute the
+secure hash of a large amount of data, such as in distributed filesystems (e.g.
+Tahoe-LAFS), cloud storage systems (e.g.  OpenStack Swift), intrusion detection
+systems (e.g. Samhain), integrity-checking local filesystems (e.g. ZFS),
+peer-to-peer file-sharing tools (e.g. BitTorrent), or version control
+systems (e.g. git). 
+You only want your hash function to be slow if you're using it to
+"stretch" user-supplied passwords, in which case see the next question.
+</p> 
+	<a name="Q4_hashing_passwords" id="Q4_hashing_passwords"></a>
+<b>Q:
+So I shouldn't use BLAKE2 for hashing user passwords?
+</b>
+<br />
+<p> 
+<b>A:</b>
+You shouldn't use *any* general-purpose hash function for user
+passwords, not BLAKE2, and not MD5, SHA-1, SHA-256, or SHA-3. 
+Instead you should use a password hashing function such as the <a
+href="https://password-hashing.net">PHC</a> winner
+<a href="https://password-hashing.net#argon2">Argon2</a> with
+appropriate time and memory cost parameters, to
+mitigate the risk of bruteforce attacks&mdash;Argon2's core uses a
+variant of BLAKE2's permutation. 
+</p>
+	<a name="Q5_different_results" id="Q5_different_results"></a>
+<b>Q:
+BLAKE2bp gives different results from BLAKE2b. Is that normal?
+</b>
+<br />
+<p> 
+<b>A:</b>
+Yes. 
+BLAKE2bp is a different algorithm from BLAKE2b and BLAKE2sp is a
+different algorithm from BLAKE2s. 
+Each algorithm produces a different hash value. 
+</p> 
+<p>
+BLAKE2b and BLAKE2s are designed to be efficient on a single CPU core
+(BLAKE2b is more efficient on 64-bit CPUs and BLAKE2s is more efficient on
+8-bit, 16-bit, or 32-bit CPUs). 
+BLAKE2bp and BLAKE2sp are designed to be efficient on multicore or SIMD
+chips, by processing the input in parallel. 
+This parallel approach results in different secure hash values from the
+single-core variants.
+</p>
+<p>
+More generally, two instances of BLAKE2b or BLAKE2s with two distinct
+sets of parameters will produce different results.
+For example, BLAKE2b in some tree mode (say, with fanout 2) will produce
+different results than BLAKE2b in a modified tree mode (say, with fanout
+3).
+</p>
+	<a name="Q6_which_to_use" id="Q6_which_to_use"></a>
+<b>Q:
+Which should I use? BLAKE2b, BLAKE2s, BLAKE2bp, or BLAKE2sp?
+</b>
+<br />
+<p>
+<b>A:</b>
+A rule of thumb is that on 64-bit platforms the best choice is BLAKE2b,
+whereas on 32-bit (or smaller) platforms BLAKE2s is recommended.
+Or, you could try each of the four of them and see which one
+performs best on your deployment platform. 
+If you do that, please write to us and let us know what you found.
+</p>
+	<a name="Q7_complete_specs" id="Q7_complete_specs"></a>
+<b>Q:
+The BLAKE2 documentation only describes differences with the original
+BLAKE, where can I find a complete specification?
+</b>
+<br />
+<p>
+<b>A:</b>
+The <a href="https://tools.ietf.org/html/rfc7693">RFC</a> includes a
+complete specification of BLAKE2b and BLAKE2s (though not of the tree
+mode).
+</p>
+</section>
+<footer>
+<hr />
+</footer>
+<i><small>Modified: 2017-02-22</small></i>
+</body></html>
